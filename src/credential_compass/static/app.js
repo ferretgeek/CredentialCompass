@@ -29,6 +29,7 @@
     document.documentElement.dataset.theme = next;
     byId('themeLabel').textContent = meta.label;
     byId('themeSwatch').style.background = meta.color;
+    byId('themeTrigger').setAttribute('aria-label', `选择主题，当前${meta.label}`);
     document.querySelector('meta[name="theme-color"]').setAttribute('content', meta.themeColor);
     localStorage.setItem(THEME_KEY, next);
     document.querySelectorAll('[data-theme-option]').forEach((button) => {
@@ -356,6 +357,7 @@
     byId('privacyToggle').addEventListener('click', async () => {
       revealAccounts = !revealAccounts;
       byId('privacyToggle').setAttribute('aria-pressed', String(revealAccounts));
+      byId('privacyToggle').setAttribute('aria-label', revealAccounts ? '重新遮罩账号' : '揭开账号遮罩');
       byId('privacyToggle').querySelector('span').textContent = revealAccounts ? '已揭开' : '隐私帘';
       await refreshState();
     });

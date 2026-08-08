@@ -39,6 +39,12 @@ class StaticContractTests(unittest.TestCase):
         self.assertNotRegex(self.html, r"https?://")
         self.assertNotRegex(self.css, r"url\(\s*['\"]?https?://")
 
+    def test_icon_only_mobile_controls_keep_accessible_names(self) -> None:
+        self.assertIn('id="privacyToggle" type="button" aria-label=', self.html)
+        self.assertIn('id="themeTrigger" type="button" aria-label=', self.html)
+        self.assertIn("setAttribute('aria-label', revealAccounts", self.js)
+        self.assertIn("选择主题，当前${meta.label}", self.js)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -15,7 +15,7 @@ Codex officially supports ChatGPT sign-in and API-key authentication. Follow the
 
 ## Tested runtime range
 
-- Python 3.10–3.13
+- Python 3.10–3.14
 - Current Chromium-family browsers, Firefox, and Safari
 - A CLIProxyAPI management endpoint reachable from the Credential Compass server process
 

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="sky">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f3f7f6">
+  <title>凭证罗盘 · Credential Compass</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/app.css?v=1.0.0">
+  <script src="/assets/app.js?v=1.0.0" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">跳到工作区</a>
+
+  <dialog class="access-dialog" id="accessDialog" aria-labelledby="accessTitle">
+    <form method="dialog" class="access-card" id="accessForm">
+      <div class="brand-mark large" aria-hidden="true"><span></span><i></i></div>
+      <p class="eyebrow">LOCAL ACCESS · 本地入口</p>
+      <h1 id="accessTitle">凭证只在边界之内被看见</h1>
+      <p class="access-copy">输入服务启动时显示的访问令牌。它只停留在当前页面内存，刷新后不会留下。</p>
+      <label class="field-label" for="accessToken">访问令牌 / Access token</label>
+      <div class="token-field">
+        <input id="accessToken" type="password" autocomplete="off" spellcheck="false" required>
+        <button class="icon-button" type="button" id="tokenReveal" aria-label="显示访问令牌" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-5.5 9.5-5.5 9.5 5.5 9.5 5.5-3.4 5.5-9.5 5.5S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+        </button>
+      </div>
+      <p class="form-error" id="accessError" role="alert"></p>
+      <button class="primary-button wide" type="submit">进入工作台</button>
+      <p class="access-note">不写入 Cookie · 不进入 localStorage · 不发送给第三方</p>
+    </form>
+  </dialog>
+
+  <div class="app-shell" id="appShell" hidden>
+    <header class="topbar">
+      <a class="brand" href="#workspace" aria-label="凭证罗盘首页">
+        <span class="brand-mark" aria-hidden="true"><span></span><i></i></span>
+        <span><strong>凭证罗盘</strong><small>Credential Compass</small></span>
+      </a>
+      <div class="topbar-actions">
+        <span class="connection-pill" id="connectionPill"><i></i><span>正在确认边界</span></span>
+        <button class="quiet-button privacy-button" id="privacyToggle" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2c4.5 0 8.2 3.4 9.5 8.8-1.3 5.4-5 8.8-9.5 8.8S3.8 17.4 2.5 12C3.8 6.6 7.5 3.2 12 3.2Z"/><path d="M8.8 12a3.2 3.2 0 1 0 6.4 0 3.2 3.2 0 0 0-6.4 0Z"/></svg>
+          <span>隐私帘</span>
+        </button>
+        <div class="theme-control">
+          <button class="quiet-button theme-trigger" id="themeTrigger" type="button" aria-expanded="false" aria-controls="themeMenu">
+            <span class="theme-swatch" id="themeSwatch"></span><span id="themeLabel">天青</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 8 4 4 4-4"/></svg>
+          </button>
+          <div class="theme-menu" id="themeMenu" hidden>
+            <button data-theme-option="sky" type="button"><i class="swatch-sky"></i><span>天青<small>Sky</small></span></button>
+            <button data-theme-option="jade" type="button"><i class="swatch-jade"></i><span>青玉<small>Jade</small></span></button>
+            <button data-theme-option="sunset" type="button"><i class="swatch-sunset"></i><span>夕照<small>Sunset</small></span></button>
+            <button data-theme-option="graphite" type="button"><i class="swatch-graphite"></i><span>深灰<small>Graphite</small></span></button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="workspace">
+      <section class="intro-panel" aria-labelledby="introTitle">
+        <div>
+          <p class="eyebrow"><span id="modeLabel">READ-ONLY OBSERVATORY</span></p>
+          <h1 id="introTitle">让散落的凭证，回到一张清楚的航图。</h1>
+          <p>只带回健康信号与必要的额度轮廓；原始 Token 不经过浏览器，也不被写入磁盘。</p>
+        </div>
+        <div class="intro-meta">
+          <span id="versionLabel">v1.0.0</span>
+          <span id="probeLabel">静态盘点</span>
+          <span id="modeBadge">本地边界</span>
+        </div>
+      </section>
+
+      <section class="metric-grid" aria-label="凭证池摘要">
+        <article class="metric-card metric-total">
+          <div class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7.2 12 3l7 4.2v9.6L12 21l-7-4.2V7.2Z"/><path d="m5 7.2 7 4.2 7-4.2M12 11.4V21"/></svg></div>
+          <div><span>凭证总数</span><strong id="metricTotal">—</strong><small>Credential pool</small></div>
+        </article>
+        <article class="metric-card metric-healthy">
+          <div class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19.5 6.5"/></svg></div>
+          <div><span>状态正常</span><strong id="metricHealthy">—</strong><small>Healthy</small></div>
+        </article>
+        <article class="metric-card metric-attention">
+          <div class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v4.8M12 17.2v.1"/></svg></div>
+          <div><span>需要留意</span><strong id="metricAttention">—</strong><small>Attention</small></div>
+        </article>
+        <article class="metric-card metric-quota">
+          <div class="metric-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18a8 8 0 1 1 16 0"/><path d="m12 18 4-6"/></svg></div>
+          <div><span>平均已用</span><strong id="metricQuota">—</strong><small>Observed quota</small></div>
+        </article>
+      </section>
+
+      <section class="workspace-grid">
+        <aside class="control-panel panel">
+          <div class="panel-heading">
+            <div><p class="eyebrow">SCAN CONTROL</p><h2>一次克制的巡航</h2></div>
+            <span class="status-dot" id="scanStatusDot"></span>
+          </div>
+          <p class="panel-copy">默认低并发，只访问已固定的管理端点。实时探测关闭时，仅盘点启用状态与元数据。</p>
+          <div class="scan-fields">
+            <label><span>并发 / Concurrency</span><input id="scanConcurrency" type="number" min="1" max="8" value="4"></label>
+            <label><span>抽样上限 / Limit</span><input id="scanLimit" type="number" min="0" value="0"><small>0 表示安全上限内全部</small></label>
+          </div>
+          <div class="progress-block">
+            <div class="progress-meta"><span id="scanPhase">等待开始</span><span id="scanPercent">0%</span></div>
+            <div class="progress-track"><i id="scanProgress"></i></div>
+            <p id="scanCaption">凭证不会离开服务器内存。</p>
+          </div>
+          <div class="control-actions">
+            <button class="primary-button" id="scanStart" type="button">开始盘点</button>
+            <button class="secondary-button" id="scanCancel" type="button" disabled>停止</button>
+          </div>
+          <div class="boundary-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 4.5 6v5.4c0 4.8 3.1 8.4 7.5 9.8 4.4-1.4 7.5-5 7.5-9.8V6L12 2.8Z"/><path d="m8.7 12 2.1 2.1 4.5-4.5"/></svg>
+            <span><strong>边界已固定</strong><small>无网页端地址或密钥编辑；无凭据打包下载。</small></span>
+          </div>
+        </aside>
+
+        <section class="results-panel panel" aria-labelledby="resultsTitle">
+          <div class="results-heading">
+            <div><p class="eyebrow">POOL CHART</p><h2 id="resultsTitle">凭证航图</h2></div>
+            <div class="result-tools">
+              <label class="search-field">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
+                <input id="searchInput" type="search" placeholder="搜索当前视图" autocomplete="off">
+              </label>
+            </div>
+          </div>
+          <div class="filter-row" role="group" aria-label="结果筛选">
+            <button class="filter-chip active" data-filter="all" type="button">全部 <span id="countAll">0</span></button>
+            <button class="filter-chip" data-filter="healthy" type="button">正常 <span id="countHealthy">0</span></button>
+            <button class="filter-chip" data-filter="attention" type="button">留意 <span id="countAttention">0</span></button>
+            <button class="filter-chip" data-filter="disabled" type="button">停用 <span id="countDisabled">0</span></button>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead><tr><th class="select-cell"><span class="visually-hidden">选择</span></th><th>账号</th><th>健康信号</th><th>计划与额度</th><th>重置</th></tr></thead>
+              <tbody id="resultBody"></tbody>
+            </table>
+            <div class="empty-state" id="emptyState">
+              <div class="empty-orbit"><span></span><i></i></div>
+              <h3>航图还没有落下第一枚坐标</h3>
+              <p>开始一次盘点，或调整当前筛选。</p>
+            </div>
+          </div>
+          <div class="selection-bar" id="selectionBar" hidden>
+            <span>已选择 <strong id="selectedCount">0</strong> 枚</span>
+            <div>
+              <button class="secondary-button" id="enableSelected" type="button">恢复启用</button>
+              <button class="warning-button" id="disableSelected" type="button">安全停用</button>
+              <button class="text-button" id="clearSelection" type="button">取消选择</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="lower-grid">
+        <article class="panel activity-panel">
+          <div class="panel-heading"><div><p class="eyebrow">QUIET LOG</p><h2>静默记录</h2></div><span>只记录事件，不记录账号与 Token</span></div>
+          <ol class="event-list" id="eventList"><li class="empty-event"><i></i><span>等待第一项经过脱敏的事件</span></li></ol>
+        </article>
+        <article class="panel safety-panel">
+          <p class="eyebrow">SAFETY CONTRACT</p>
+          <h2>看见健康，不触碰秘密。</h2>
+          <ul>
+            <li><i></i><span>管理密钥只在服务端内存</span></li>
+            <li><i></i><span>浏览器只收到账号视图与健康分类</span></li>
+            <li><i></i><span>删除与凭据 ZIP 不属于公开产品</span></li>
+          </ul>
+        </article>
+      </section>
+    </main>
+
+    <footer><span>Credential Compass is an independent community project.</span><span>与 OpenAI 无隶属或背书关系</span></footer>
+  </div>
+
+  <dialog class="confirm-dialog" id="confirmDialog">
+    <form method="dialog" id="confirmForm">
+      <p class="eyebrow">REVIEW THE CHANGE</p>
+      <h2 id="confirmTitle">确认状态变更</h2>
+      <p id="confirmCopy"></p>
+      <label class="field-label" for="confirmInput">输入确认短语</label>
+      <input id="confirmInput" autocomplete="off" spellcheck="false">
+      <p class="confirm-hint" id="confirmHint"></p>
+      <div class="dialog-actions"><button class="secondary-button" value="cancel">返回</button><button class="warning-button" id="confirmSubmit" value="default">确认执行</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

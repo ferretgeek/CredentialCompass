@@ -1,0 +1,1 @@
+# Runtime dependencies: none. Credential Compass uses Python's standard library.

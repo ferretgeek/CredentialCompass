@@ -27,7 +27,8 @@ def main() -> int:
     except ConfigError as exc:
         print(f"Configuration error: {exc}", file=sys.stderr)
         return 2
-    display_host = "127.0.0.1" if config.bind_host in {"0.0.0.0", "::"} else config.bind_host
+    # These literals identify wildcard binds for safe display; they never initiate a bind here.
+    display_host = "127.0.0.1" if config.bind_host in {"0.0.0.0", "::"} else config.bind_host  # nosec B104
     print(f"Credential Compass {__version__} — http://{display_host}:{config.port}")
     if config.generated_access_token:
         print("Ephemeral local access token (not saved):")

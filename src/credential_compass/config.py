@@ -106,7 +106,8 @@ def _allowed_hosts(bind_host: str, configured: str) -> frozenset[str]:
             hosts.add(str(bind_address))
     if not hosts:
         raise ConfigError("COMPASS_ALLOWED_HOSTS is required for a non-loopback bind")
-    if any(host in {"*", "0.0.0.0", "::"} for host in hosts):
+    # Reject wildcard allowlist entries; these literals are validation sentinels, not bind targets.
+    if any(host in {"*", "0.0.0.0", "::"} for host in hosts):  # nosec B104
         raise ConfigError("COMPASS_ALLOWED_HOSTS must list exact browser hostnames")
     return frozenset(hosts)
 

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "credential-compass"
-version = "1.0.0"
+version = "1.0.1"
 description = "A privacy-first credential health workbench for CLIProxyAPI-managed Codex pools."
 readme = "README_EN.md"
 requires-python = ">=3.10"

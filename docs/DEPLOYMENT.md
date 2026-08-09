@@ -71,3 +71,23 @@ Then browse only to `http://127.0.0.1:8788`.
 - Browser storage contains only the theme name; reload requires the access token again.
 - Management keys, accounts, and upstream bodies do not appear in source, responses, logs, or screenshots.
 - Live probing and status changes are enabled only when genuinely required.
+
+## Architecture and lifecycle
+
+Credential Compass is a stateless browser panel over a Python HTTP service. The service holds the upstream management key and the panel access token in process memory, reduces upstream credential data to masked records, and does not create an application database. Browser storage contains only the selected theme.
+
+For upgrades, keep the previous source/image and secret configuration, deploy the new version on a separate loopback port, run the go-live checks, then switch the proxy or service. Roll back by restoring the previous source/image; do not reuse an access token that was exposed during testing.
+
+There is no application data to back up. Back up only the private environment/service configuration through your encrypted infrastructure process. Never place management keys in repository backups, screenshots, or generic log archives.
+
+## Uninstall and troubleshooting
+
+- Stop and disable the systemd unit or run `docker compose down`; remove the virtual environment/image only after confirming rollback is unnecessary.
+- Delete `/etc/credential-compass.env` through the host's secret-removal process and clear browser site data if the saved theme is no longer wanted.
+- `401`: re-enter the panel access token; it is intentionally not persisted by the page.
+- `403` Host/Origin error: use the configured hostname and same-origin page; do not disable the checks.
+- Inventory unavailable: verify the CLIProxyAPI management URL/key from the service account without printing either value.
+- Probe unavailable while inventory works: keep probing disabled and recheck [`COMPATIBILITY.md`](./COMPATIBILITY.md); the probe path is optional and less stable.
+- Health endpoint failure: inspect the service status and private logs, then redact endpoints, account handles, keys, and upstream bodies before sharing diagnostics.
+
+Stop/disable the service before removal, delete secrets through the host's secret-management process, and clear browser site data only if desired. Preserve Host/Origin and authentication checks when troubleshooting; never solve connectivity by exposing the panel or logging secrets.

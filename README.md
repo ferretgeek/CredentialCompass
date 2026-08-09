@@ -1,6 +1,6 @@
 <div align="center">
 
-# 凭证罗盘 · Credential Compass
+# 凭证罗盘 / Credential Compass — CLIProxyAPI 凭证池体检
 
 让散落的凭证，回到一张清楚的航图。
 

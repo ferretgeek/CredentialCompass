@@ -1,6 +1,6 @@
 <div align="center">
 
-# Credential Compass · 凭证罗盘
+# Credential Compass / 凭证罗盘 — CLIProxyAPI Credential Health
 
 Bring scattered credentials back onto one clear chart.
 

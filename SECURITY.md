@@ -14,8 +14,12 @@ Credential Compass keeps the CLIProxyAPI management key in server-process memory
 
 The default listener is loopback-only. A non-loopback listener requires a strong access token and exact Host allowlist, but that does not replace HTTPS. The optional compatibility probe and reversible status controls are both disabled by default.
 
+Forwarded client addresses are accepted only from exact `COMPASS_TRUSTED_PROXY_IPS`; upstream management connections are pinned to the address set resolved and approved at startup, with the connected peer verified before credentials are sent.
+
 The project cannot protect a compromised browser, extension, operating system, reverse proxy, CLIProxyAPI instance, upstream account, or operator environment.
 
 ## 中文说明
+
+反向代理只有被精确列入 `COMPASS_TRUSTED_PROXY_IPS` 时才能提供客户端地址；上游管理连接会固定到启动时批准的地址，并在发送密钥前复核实际对端。
 
 请通过仓库的私密漏洞报告功能提交安全问题。报告中不得包含真实账号、凭证文件、Token、管理密钥、私有 API 地址、服务器身份、原始响应、日志或截图，只能使用保留域名下的合成数据。若秘密曾进入公开历史，仅删除当前文件不算修复：仍须撤销或轮换秘密，清理所有可达 Git 历史与发布资产，并从未登录视角复核。

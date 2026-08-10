@@ -10,6 +10,7 @@ services:
       COMPASS_BIND_HOST: "0.0.0.0"
       COMPASS_PORT: "8788"
       COMPASS_ALLOWED_HOSTS: "${COMPASS_ALLOWED_HOSTS:-localhost,127.0.0.1}"
+      COMPASS_TRUSTED_PROXY_IPS: "${COMPASS_TRUSTED_PROXY_IPS:-}"
       COMPASS_ACCESS_TOKEN: "${COMPASS_ACCESS_TOKEN:?set a random value of at least 32 characters}"
       COMPASS_CPA_URL: "${COMPASS_CPA_URL:-https://cliproxyapi.example.com}"
       COMPASS_CPA_KEY: "${COMPASS_CPA_KEY:-}"

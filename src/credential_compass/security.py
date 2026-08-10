@@ -100,6 +100,29 @@ def peer_key(address: str) -> str:
         return "unknown"
 
 
+def client_peer_key(
+    peer_address: str,
+    forwarded_for: str | None,
+    trusted_proxy_ips: frozenset[str],
+) -> str:
+    """Return the first untrusted hop, but only when the direct peer is trusted."""
+    direct = peer_key(peer_address)
+    if direct not in trusted_proxy_ips or not forwarded_for:
+        return direct
+    raw_hops = [item.strip() for item in forwarded_for.split(",")]
+    if not raw_hops or len(raw_hops) > 32:
+        return direct
+    hops = [peer_key(item) for item in raw_hops]
+    if any(item == "unknown" for item in hops):
+        return direct
+    current = direct
+    for candidate in reversed(hops):
+        if current not in trusted_proxy_ips:
+            break
+        current = candidate
+    return current
+
+
 class SlidingWindowLimiter:
     def __init__(self, limit: int, window_seconds: float) -> None:
         self.limit = limit

@@ -22,10 +22,21 @@ class FakeResponse:
 
 
 class FakeConnection:
-    def __init__(self, response: FakeResponse) -> None:
+    class Socket:
+        def __init__(self, peer: str) -> None:
+            self.peer = peer
+
+        def getpeername(self) -> tuple[str, int]:
+            return self.peer, 443
+
+    def __init__(self, response: FakeResponse, peer: str = "203.0.113.8") -> None:
         self.response = response
         self.request_data = None
         self.closed = False
+        self.sock = self.Socket(peer)
+
+    def connect(self) -> None:
+        return None
 
     def request(self, method, path, body=None, headers=None) -> None:
         self.request_data = {"method": method, "path": path, "body": body, "headers": headers}
@@ -43,7 +54,15 @@ class ClientTests(unittest.TestCase):
     ) -> tuple[CPAClient, FakeConnection]:
         raw = payload if isinstance(payload, bytes) else json.dumps(payload).encode()
         connection = FakeConnection(FakeResponse(status, raw))
-        client = CPAClient(ClientSettings("https://cpa.example.com", "management-secret", 5, max_accounts))
+        client = CPAClient(
+            ClientSettings(
+                "https://cpa.example.com",
+                "management-secret",
+                5,
+                max_accounts,
+                frozenset({"203.0.113.8"}),
+            )
+        )
         client._connection = lambda: connection  # type: ignore[method-assign]
         return client, connection
 
@@ -94,6 +113,13 @@ class ClientTests(unittest.TestCase):
         self.assertTrue(client.set_disabled("opaque-on-server.json", True))
         payload = json.loads(connection.request_data["body"])
         self.assertEqual(payload, {"name": "opaque-on-server.json", "disabled": True})
+
+    def test_unapproved_connected_peer_is_rejected_before_key_is_sent(self) -> None:
+        client, connection = self.client({"files": []})
+        connection.sock = FakeConnection.Socket("203.0.113.9")
+        with self.assertRaisesRegex(ClientError, "unapproved"):
+            client.get_auth_files()
+        self.assertIsNone(connection.request_data)
 
 
 if __name__ == "__main__":

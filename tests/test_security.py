@@ -4,6 +4,7 @@ import unittest
 
 from credential_compass.security import (
     SlidingWindowLimiter,
+    client_peer_key,
     clean_text,
     host_allowed,
     mask_email,
@@ -64,6 +65,16 @@ class SecurityTests(unittest.TestCase):
         self.assertTrue(limiter.allow("client"))
         self.assertFalse(limiter.allow("client"))
         self.assertTrue(limiter.allow("other"))
+
+    def test_forwarded_client_is_used_only_behind_a_trusted_proxy(self) -> None:
+        trusted = frozenset({"127.0.0.1", "192.0.2.10"})
+        self.assertEqual(client_peer_key("127.0.0.1", "198.51.100.7", trusted), "198.51.100.7")
+        self.assertEqual(
+            client_peer_key("127.0.0.1", "198.51.100.7, 192.0.2.10", trusted),
+            "198.51.100.7",
+        )
+        self.assertEqual(client_peer_key("198.51.100.8", "198.51.100.7", trusted), "198.51.100.8")
+        self.assertEqual(client_peer_key("127.0.0.1", "not-an-ip", trusted), "127.0.0.1")
 
 
 if __name__ == "__main__":

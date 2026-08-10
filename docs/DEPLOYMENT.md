@@ -54,7 +54,9 @@ Keep the service on `127.0.0.1:8788`; do not expose it directly to the public in
 
 ## HTTPS reverse proxy
 
-Start from [`deploy/nginx.conf.example`](../deploy/nginx.conf.example). Replace the reserved hostname, add the same hostname to `COMPASS_ALLOWED_HOSTS`, terminate TLS at a trusted proxy, and preserve the original `Host`. Do not disable the application Host or Origin checks.
+Start from [`deploy/nginx.conf.example`](../deploy/nginx.conf.example). Replace the reserved hostname, add the same hostname to `COMPASS_ALLOWED_HOSTS`, terminate TLS at a trusted proxy, and preserve the original `Host`. Set `COMPASS_TRUSTED_PROXY_IPS` to the proxy's exact IP literals (normally `127.0.0.1,::1`) so rate limits use the real client. The example overwrites `X-Forwarded-For`; never trust forwarding headers from an unlisted peer. Do not disable the application Host or Origin checks.
+
+CLIProxyAPI hostnames are resolved once during startup. Each authenticated connection is pinned to and peer-checked against that approved address set, preventing DNS changes from redirecting the management key. Restart Credential Compass intentionally after a legitimate upstream address change.
 
 For personal remote access, an SSH tunnel is safer and simpler:
 

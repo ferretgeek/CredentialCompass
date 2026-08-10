@@ -15,8 +15,8 @@ from .cpa_client import ClientSettings, CPAClient, DemoCPAClient
 from .security import (
     SECURITY_HEADERS,
     SlidingWindowLimiter,
+    client_peer_key,
     host_allowed,
-    peer_key,
     same_origin,
     token_matches,
 )
@@ -46,6 +46,7 @@ class CredentialCompassServer:
                     management_key=config.cpa_key,
                     timeout=config.request_timeout,
                     max_accounts=config.max_accounts,
+                    approved_addresses=config.cpa_addresses,
                 )
             )
         )
@@ -94,7 +95,11 @@ class CredentialCompassServer:
                 if fetch_site == "cross-site" or not same_origin(self.headers.get("Origin"), host):
                     self._error(HTTPStatus.FORBIDDEN, "cross_origin", "Cross-origin requests are blocked")
                     return False
-                remote = peer_key(self.client_address[0])
+                remote = client_peer_key(
+                    self.client_address[0],
+                    self.headers.get("X-Forwarded-For"),
+                    application.config.trusted_proxy_ips,
+                )
                 limiter = application.action_limiter if action else application.general_limiter
                 if not limiter.allow(remote):
                     self._error(

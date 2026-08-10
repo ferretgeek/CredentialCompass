@@ -83,6 +83,11 @@ class ConfigTests(unittest.TestCase):
         self.assertTrue(config.allow_status_changes)
         self.assertTrue(config.live_probe)
 
+    def test_trusted_proxies_must_be_ip_literals(self) -> None:
+        os.environ["COMPASS_TRUSTED_PROXY_IPS"] = "proxy.example.com"
+        with self.assertRaisesRegex(ConfigError, "IP literals"):
+            AppConfig.from_env(demo_override=True)
+
 
 if __name__ == "__main__":
     unittest.main()

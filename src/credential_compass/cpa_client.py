@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import http.client
+import ipaddress
 import json
+import socket
 import ssl
 import time
 from dataclasses import dataclass
@@ -22,6 +24,7 @@ class ClientSettings:
     management_key: str
     timeout: int
     max_accounts: int
+    approved_addresses: frozenset[str]
 
 
 class CPAClient:
@@ -33,11 +36,37 @@ class CPAClient:
 
     def _connection(self) -> http.client.HTTPConnection:
         host = self._parsed.hostname or ""
+        if not self.settings.approved_addresses:
+            raise ClientError("CLIProxyAPI has no approved connection address")
+        approved = min(
+            self.settings.approved_addresses,
+            key=lambda value: (ipaddress.ip_address(value).version, int(ipaddress.ip_address(value))),
+        )
+        port = self._parsed.port or (443 if self._parsed.scheme == "https" else 80)
         if self._parsed.scheme == "https":
-            return http.client.HTTPSConnection(
-                host, self._parsed.port or 443, timeout=self.settings.timeout, context=self._tls
+            connection: http.client.HTTPConnection = http.client.HTTPSConnection(
+                host, port, timeout=self.settings.timeout, context=self._tls
             )
-        return http.client.HTTPConnection(host, self._parsed.port or 80, timeout=self.settings.timeout)
+        else:
+            connection = http.client.HTTPConnection(host, port, timeout=self.settings.timeout)
+
+        def create_pinned_connection(
+            _address: tuple[str, int],
+            timeout: float | object = socket._GLOBAL_DEFAULT_TIMEOUT,
+            source_address: tuple[str, int] | None = None,
+        ) -> socket.socket:
+            return socket.create_connection((approved, port), timeout, source_address)
+
+        connection._create_connection = create_pinned_connection  # type: ignore[method-assign]
+        return connection
+
+    def _connect_and_verify(self, connection: http.client.HTTPConnection) -> None:
+        connection.connect()
+        if connection.sock is None:
+            raise ClientError("CLIProxyAPI connection was not established")
+        peer = str(ipaddress.ip_address(connection.sock.getpeername()[0].split("%", 1)[0]))
+        if peer not in self.settings.approved_addresses:
+            raise ClientError("CLIProxyAPI connected to an unapproved address")
 
     def _request(self, method: str, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         body = None if payload is None else json.dumps(payload, separators=(",", ":")).encode("utf-8")
@@ -52,6 +81,7 @@ class CPAClient:
             headers["Content-Type"] = "application/json"
         connection = self._connection()
         try:
+            self._connect_and_verify(connection)
             connection.request(method, path, body=body, headers=headers)
             response = connection.getresponse()
             raw = response.read(MAX_RESPONSE_BYTES + 1)

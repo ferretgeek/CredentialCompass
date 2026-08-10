@@ -19,6 +19,7 @@ class AppTests(unittest.TestCase):
             access_token=cls.token,
             generated_access_token=False,
             allowed_hosts=frozenset({"127.0.0.1", "localhost"}),
+            trusted_proxy_ips=frozenset(),
             cpa_url="demo://local",
             cpa_host="demo",
             cpa_addresses=frozenset(),

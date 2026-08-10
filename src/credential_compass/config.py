@@ -112,6 +112,22 @@ def _allowed_hosts(bind_host: str, configured: str) -> frozenset[str]:
     return frozenset(hosts)
 
 
+def _trusted_proxy_addresses(configured: str) -> frozenset[str]:
+    addresses: set[str] = set()
+    for item in configured.split(","):
+        value = item.strip()
+        if not value:
+            continue
+        try:
+            address = ipaddress.ip_address(value.split("%", 1)[0])
+        except ValueError as exc:
+            raise ConfigError("COMPASS_TRUSTED_PROXY_IPS must contain IP literals") from exc
+        if address.is_unspecified or address.is_multicast:
+            raise ConfigError("COMPASS_TRUSTED_PROXY_IPS contains an unsafe address")
+        addresses.add(str(address))
+    return frozenset(addresses)
+
+
 @dataclass(frozen=True, slots=True)
 class AppConfig:
     bind_host: str
@@ -119,6 +135,7 @@ class AppConfig:
     access_token: str
     generated_access_token: bool
     allowed_hosts: frozenset[str]
+    trusted_proxy_ips: frozenset[str]
     cpa_url: str
     cpa_host: str
     cpa_addresses: frozenset[str]
@@ -139,6 +156,7 @@ class AppConfig:
         allow_private_http = _bool("COMPASS_ALLOW_PRIVATE_HTTP", False)
         configured_hosts = os.getenv("COMPASS_ALLOWED_HOSTS", "")
         allowed_hosts = _allowed_hosts(bind_host, configured_hosts)
+        trusted_proxy_ips = _trusted_proxy_addresses(os.getenv("COMPASS_TRUSTED_PROXY_IPS", ""))
 
         access_token = os.getenv("COMPASS_ACCESS_TOKEN", "").strip()
         generated = False
@@ -169,6 +187,7 @@ class AppConfig:
             access_token=access_token,
             generated_access_token=generated,
             allowed_hosts=allowed_hosts,
+            trusted_proxy_ips=trusted_proxy_ips,
             cpa_url=cpa_url,
             cpa_host=cpa_host,
             cpa_addresses=cpa_addresses,

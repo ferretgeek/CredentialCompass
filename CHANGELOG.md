@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## [Unreleased]
+
+- Isolated rate-limit identities behind explicitly trusted reverse proxies.
+- Pinned CLIProxyAPI connections to startup-approved IPs and verified the peer before sending the management key.
+
 ## [1.0.1] - 2026-08-09
 
 - Reissued the public history after an adversarial two-engine secret scan found credential-shaped test identifiers; no real credential or personal data was present.

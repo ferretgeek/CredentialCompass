@@ -4,8 +4,8 @@ import unittest
 
 from credential_compass.security import (
     SlidingWindowLimiter,
-    client_peer_key,
     clean_text,
+    client_peer_key,
     host_allowed,
     mask_email,
     opaque_handle,

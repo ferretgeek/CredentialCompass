@@ -20,8 +20,8 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/ferretgeek/CredentialCompass"
-Issues = "https://github.com/ferretgeek/CredentialCompass/issues"
+Homepage = "https://github.com/ferretgeek/cliproxyapi-credential-check"
+Issues = "https://github.com/ferretgeek/cliproxyapi-credential-check/issues"
 
 [project.scripts]
 credential-compass = "credential_compass.__main__:main"

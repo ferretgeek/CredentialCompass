@@ -253,7 +253,7 @@
         byId('accessDialog').showModal();
         return;
       }
-      toast('暂时无法刷新航图', 'bad');
+      toast('暂时无法刷新凭证清单', 'bad');
     }
     pollTimer = window.setTimeout(refreshState, state?.running ? POLL_RUNNING : POLL_IDLE);
   }
@@ -280,7 +280,7 @@
     const limit = Number.parseInt(byId('scanLimit').value, 10);
     try {
       await api('/api/scan', { method: 'POST', body: JSON.stringify({ concurrency, limit }) });
-      toast('巡航已经开始', 'good');
+      toast('盘点已经开始', 'good');
       await refreshState();
     } catch (error) { toast(error.message, 'bad'); }
   }

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f3f7f6">
-  <title>凭证罗盘 · Credential Compass</title>
+  <title>CLIProxyAPI 凭证体检</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/favicon.ico">
@@ -19,7 +19,7 @@
     <form method="dialog" class="access-card" id="accessForm">
       <div class="brand-mark large" aria-hidden="true"><span></span><i></i></div>
       <p class="eyebrow">LOCAL ACCESS · 本地入口</p>
-      <h1 id="accessTitle">凭证只在边界之内被看见</h1>
+      <h1 id="accessTitle">先确认是你</h1>
       <p class="access-copy">输入服务启动时显示的访问令牌。它只停留在当前页面内存，刷新后不会留下。</p>
       <label class="field-label" for="accessToken">访问令牌 / Access token</label>
       <div class="token-field">
@@ -36,9 +36,9 @@
 
   <div class="app-shell" id="appShell" hidden>
     <header class="topbar">
-      <a class="brand" href="#workspace" aria-label="凭证罗盘首页">
+      <a class="brand" href="#workspace" aria-label="凭证体检首页">
         <span class="brand-mark" aria-hidden="true"><span></span><i></i></span>
-        <span><strong>凭证罗盘</strong><small>Credential Compass</small></span>
+        <span><strong>凭证体检</strong><small>CLIProxyAPI · 默认只读</small></span>
       </a>
       <div class="topbar-actions">
         <span class="connection-pill" id="connectionPill"><i></i><span>正在确认边界</span></span>
@@ -65,7 +65,7 @@
       <section class="intro-panel" aria-labelledby="introTitle">
         <div>
           <p class="eyebrow"><span id="modeLabel">READ-ONLY OBSERVATORY</span></p>
-          <h1 id="introTitle">让散落的凭证，回到一张清楚的航图。</h1>
+          <h1 id="introTitle">凭证池里哪个号还能用，一页看清。</h1>
           <p>只带回健康信号与必要的额度轮廓；原始 Token 不经过浏览器，也不被写入磁盘。</p>
         </div>
         <div class="intro-meta">
@@ -97,7 +97,7 @@
       <section class="workspace-grid">
         <aside class="control-panel panel">
           <div class="panel-heading">
-            <div><p class="eyebrow">SCAN CONTROL</p><h2>一次克制的巡航</h2></div>
+            <div><p class="eyebrow">SCAN CONTROL</p><h2>开始一次盘点</h2></div>
             <span class="status-dot" id="scanStatusDot"></span>
           </div>
           <p class="panel-copy">默认低并发，只访问已固定的管理端点。实时探测关闭时，仅盘点启用状态与元数据。</p>
@@ -122,7 +122,7 @@
 
         <section class="results-panel panel" aria-labelledby="resultsTitle">
           <div class="results-heading">
-            <div><p class="eyebrow">POOL CHART</p><h2 id="resultsTitle">凭证航图</h2></div>
+            <div><p class="eyebrow">CREDENTIAL POOL</p><h2 id="resultsTitle">凭证清单</h2></div>
             <div class="result-tools">
               <label class="search-field">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.2 4.2"/></svg>
@@ -143,7 +143,7 @@
             </table>
             <div class="empty-state" id="emptyState">
               <div class="empty-orbit"><span></span><i></i></div>
-              <h3>航图还没有落下第一枚坐标</h3>
+              <h3>还没有读到任何凭证</h3>
               <p>开始一次盘点，或调整当前筛选。</p>
             </div>
           </div>
